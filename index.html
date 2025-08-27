@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alkitab: Pelita Jiwa</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        :root {
+            --color-background: #1A1817; --color-surface-primary: #2A2726;
+            --color-border: rgba(212, 175, 55, 0.2); --color-text-primary: #F5F0E1;
+            --color-accent-primary: #D4AF37; --color-accent-glow: rgba(212, 175, 55, 0.15);
+            --font-family-serif: "EB Garamond", serif; --font-family-sans: "Lato", sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--color-background); color: var(--color-text-primary);
+            font-family: var(--font-family-sans); font-weight: 300;
+            overflow-x: hidden; letter-spacing: 0.5px;
+        }
+        canvas#divine-light { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; }
+        header { padding: 2rem 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-family-serif); font-size: 1.75rem; font-weight: 700; }
+        nav ul { display: flex; list-style: none; }
+        nav li { margin-left: 2.5rem; }
+        nav a { color: var(--color-text-primary); text-decoration: none; font-weight: 400; position: relative; transition: color 0.3s ease; }
+        main { padding: 4rem 0; }
+        section { margin-bottom: 8rem; }
+        .section-title { font-family: var(--font-family-serif); font-size: 3.5rem; font-weight: 700; margin-bottom: 2rem; color: var(--color-accent-primary); text-align: center; }
+        .hero { text-align: center; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .hero h1 { font-family: var(--font-family-serif); font-size: 4.5rem; font-weight: 400; margin-bottom: 1.5rem; line-height: 1.2; max-width: 800px; }
+        .hero p { font-size: 1.25rem; font-weight: 300; color: var(--color-accent-primary); }
+        .devotional-card { background-color: var(--color-surface-primary); border: 1px solid var(--color-border); padding: 3rem; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .devotional-card blockquote { font-family: var(--font-family-serif); font-size: 1.75rem; line-height: 1.6; text-align: center; margin-bottom: 2rem; border-left: 3px solid var(--color-accent-primary); padding-left: 2rem; }
+        .devotional-card p { line-height: 1.8; margin-bottom: 1rem; }
+        .principles-list { list-style: none; padding: 0; }
+        .principles-list li { background-color: var(--color-surface-primary); border: 1px solid var(--color-border); padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; font-size: 1.1rem; }
+        .stories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .story-card { background-color: var(--color-surface-primary); border: 1px solid var(--color-border); border-radius: 8px; padding: 2rem; position: relative; overflow: hidden; will-change: transform; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .story-card h3 { font-family: var(--font-family-serif); font-size: 1.75rem; margin-bottom: 1rem; color: var(--color-accent-primary); }
+        .contact-form { display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto; }
+        .contact-form input, .contact-form textarea { background-color: var(--color-surface-primary); border: 1px solid var(--color-border); color: var(--color-text-primary); padding: 1rem; border-radius: 4px; font-family: var(--font-family-sans); font-size: 1rem; }
+        .contact-form button { background-color: var(--color-accent-primary); color: var(--color-background); border: none; padding: 1rem; border-radius: 4px; font-weight: 700; font-size: 1rem; cursor: pointer; position: relative; overflow: hidden; }
+        footer { text-align: center; padding: 3rem 0; border-top: 1px solid var(--color-border); margin-top: 4rem; }
+    </style>
+</head>
+<body>
+    <canvas id="divine-light"></canvas>
+    <div class="container">
+        <header>
+            <nav role="navigation" aria-label="Main Navigation">
+                <div class="logo">Alkitab: Pelita Jiwa</div>
+                <ul>
+                    <li><a href="#devotion">Renungan Hari Ini</a></li>
+                    <li><a href="#principles">Prinsip Iman</a></li>
+                    <li><a href="#stories">Kisah Inspiratif</a></li>
+                    <li><a href="#prayer">Kontak & Doa</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero" id="home" role="banner">
+                <!-- Initial loading state -->
+                <h1 id="hero-headline">Memuat Firman...</h1>
+                <p id="hero-tagline"></p>
+            </section>
+            <section id="devotion" aria-labelledby="devotion-title">
+                <h2 id="devotion-title" class="section-title">Renungan Hari Ini</h2>
+                <div class="devotional-card">
+                    <blockquote id="devotion-verse"></blockquote>
+                    <div id="devotion-text"></div>
+                </div>
+            </section>
+            <section id="principles" aria-labelledby="principles-title">
+                <h2 id="principles-title" class="section-title">Prinsip Iman</h2>
+                <ul class="principles-list"></ul>
+            </section>
+            <section id="stories" aria-labelledby="stories-title">
+                <h2 id="stories-title" class="section-title">Kisah Inspiratif</h2>
+                <div class="stories-grid"></div>
+            </section>
+            <section id="prayer" aria-labelledby="prayer-title">
+                <h2 id="prayer-title" class="section-title">Kontak & Doa</h2>
+                <form class="contact-form">
+                    <input type="text" placeholder="Nama Anda" aria-label="Nama Anda">
+                    <textarea rows="5" placeholder="Pokok Doa Anda..." aria-label="Pokok Doa Anda"></textarea>
+                    <button type="submit">Kirim Doa</button>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            <p>Karena di mana dua atau tiga orang berkumpul dalam Nama-Ku, di situ Aku ada di tengah-tengah mereka.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- FALLBACK CONTENT (Used if API fails) ---
+        const fallbackData = {
+            hero: { headline: "Firman-Mu itu pelita bagi kakiku", tagline: "Mazmur 119:105" },
+            devotion: { title: "Kasih Karunia", verse: "Sebab karena kasih karunia kamu diselamatkan oleh iman...", verse_ref: "Efesus 2:8", text: ["Gagal memuat renungan hari ini. Menampilkan konten darurat.", "Silakan periksa kembali nanti."] },
+            principles: ["Anugerah: Diselamatkan oleh kasih karunia.", "Penebusan: Yesus Kristus mati untuk menebus dosa.", "Kebangkitan: Kemenangan Kristus atas maut.", "Kedaulatan: Tuhan berdaulat atas segalanya."]
+        };
+
+        const EventBus = { events: {}, on(e,t){this.events[e]||(this.events[e]=[]),this.events[e].push(t)},emit(e,t){this.events[e]&&this.events[e].forEach(e=>e(t))}};
+        const AnimationRegistry = { getCascade:e=>anime({targets:e,delay:anime.stagger(100),translateY:["20px","0px"],opacity:100,easing:"easeOutExpo",duration:1e3,autoplay:!1}),getBloom:e=>anime({targets:e,scale:[.95,1],opacity:100,filter:["blur(8px)","blur(0px)"],easing:"easeOutCubic",duration:1200,autoplay:!1})};
+        const CanvasManager = { init(){this.canvas=document.getElementById("divine-light"),this.ctx=this.canvas.getContext("2d"),this.mouse={x:-200,y:-200,active:!1},window.addEventListener("resize",()=>this.resize(),{passive:!0}),document.addEventListener("mousemove",e=>{this.mouse.x=e.clientX,this.mouse.y=e.clientY,this.mouse.active=!0},{passive:!0}),document.addEventListener("mouseleave",()=>{this.mouse.active=!1}),this.resize(),this.render()},resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight},render(){try{this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.mouse.active&&(()=>{const e=this.ctx.createRadialGradient(this.mouse.x,this.mouse.y,0,this.mouse.x,this.mouse.y,150);e.addColorStop(0,"rgba(212, 175, 55, 0.1)"),e.addColorStop(.5,"rgba(212, 175, 55, 0.05)"),e.addColorStop(1,"rgba(212, 175, 55, 0)"),this.ctx.fillStyle=e,this.ctx.beginPath(),this.ctx.arc(this.mouse.x,this.mouse.y,150,0,2*Math.PI),this.ctx.fill()})(),requestAnimationFrame(()=>this.render())}catch(e){console.error("Canvas rendering failed.",e)}}};
+
+        // --- API MANAGER (Calls your backend proxy) ---
+        const APIManager = {
+            async getGenerativeContent() {
+                try {
+                    // This is the crucial fetch call. It targets the backend endpoint where
+                    // your Python script is executed.
+                    const response = await fetch('http://vexious.pythonanywhere.com/api/generate-content', { // IMPORTANT: This path must match your backend server's route
+                        method: 'POST', // Use POST if you're sending a prompt, GET if not
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API response error: ${response.status}`);
+                    }
+                    
+                    // The Python script should return a clean JSON object.
+                    return await response.json();
+
+                } catch (error) {
+                    console.error("Could not fetch generative content. Using fallback.", error);
+                    return fallbackData; // Resilience Protocol
+                }
+            }
+        };
+        
+        // --- DOM MANAGER (Renders the data) ---
+        const DOMManager = {
+            populateContent(data) {
+                document.getElementById('hero-headline').textContent = data.hero.headline;
+                document.getElementById('hero-tagline').textContent = data.hero.tagline;
+                document.getElementById('devotion-title').textContent = data.devotion.title;
+                document.getElementById('devotion-verse').textContent = `"${data.devotion.verse}" - ${data.devotion.verse_ref}`;
+                
+                const devotionTextEl = document.getElementById('devotion-text');
+                devotionTextEl.innerHTML = '';
+                data.devotion.text.forEach(p => { devotionTextEl.innerHTML += `<p>${p}</p>`; });
+
+                const principlesListEl = document.querySelector('.principles-list');
+                principlesListEl.innerHTML = '';
+                data.principles.forEach(p => { principlesListEl.innerHTML += `<li>${p}</li>`; });
+                
+                // For this example, stories are static placeholders.
+                const storiesGrid = document.querySelector('.stories-grid');
+                storiesGrid.innerHTML = `<div class="story-card"><h3>Kisah Gagal Dimuat</h3><p>Kisah-kisah inspiratif sedang diperbarui. Silakan kembali lagi nanti.</p></div>`;
+            }
+        };
+        
+        // Other managers remain unchanged but are defined for initialization
+        const ScrollManager = { init() { const options = { rootMargin: '0px 0px -150px 0px', threshold: 0.2 }; const observer = new IntersectionObserver((entries) => { entries.forEach(entry => EventBus.emit('ui:section:intersect', entry)); }, options); document.querySelectorAll('section').forEach(section => observer.observe(section)); }};
+        const TimelineManager = { init() { EventBus.on('ui:section:intersect', this.handleSectionIntersect); this.playedAnimations = new Set(); }, handleSectionIntersect(entry) { if (entry.isIntersecting) { const sectionId = entry.target.id; if (this.playedAnimations.has(sectionId)) return; const title = entry.target.querySelector('.section-title'); if(title) AnimationRegistry.getBloom(title).play(); if (sectionId === 'principles') { const items = document.querySelectorAll('.principles-list li'); AnimationRegistry.getCascade(items).play(); } this.playedAnimations.add(sectionId); } }};
+        const InteractionManager = { init() { this.setupNavHover(); }, setupNavHover() { document.querySelectorAll('nav a').forEach(link => { link.addEventListener('mouseenter', () => anime({ targets: link, color: 'rgba(212, 175, 55, 1)', duration: 300 })); link.addEventListener('mouseleave', () => anime({ targets: link, color: 'rgba(245, 240, 225, 1)', duration: 300 })); }); }};
+
+        // --- ASYNCHRONOUS INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            async function main() {
+                CanvasManager.init(); // Initialize non-data-dependent visuals first
+
+                // 1. Commune with the Oracle (via our backend proxy)
+                const generativeData = await APIManager.getGenerativeContent();
+
+                // 2. Populate the DOM with the sacred data
+                DOMManager.populateContent(generativeData);
+
+                // 3. Trigger the entry animation now that content is ready
+                AnimationRegistry.getBloom('#hero-headline').play();
+
+                // 4. Initialize all interactive and scroll-based modules
+                ScrollManager.init();
+                TimelineManager.init();
+                InteractionManager.init();
+            }
+
+            main().catch(error => {
+                console.error("A critical error occurred during application initialization:", error);
+                // On catastrophic failure, still attempt to render fallback data
+                DOMManager.populateContent(fallbackData);
+            });
+        });
+    </script>
+</body>
+</html>
