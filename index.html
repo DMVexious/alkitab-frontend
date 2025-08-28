@@ -118,7 +118,7 @@
                 try {
                     // This is the crucial fetch call. It targets the backend endpoint where
                     // your Python script is executed.
-                    const response = await fetch('https://vexious.pythonanywhere.com/api/generate-content', { // IMPORTANT: This path must match your backend server's route
+                    const response = await fetch('https://www.pythonanywhere.com/user/Vexious/api/generate-content', { // IMPORTANT: This path must match your backend server's route
                         method: 'POST', // Use POST if you're sending a prompt, GET if not
                         headers: { 'Content-Type': 'application/json' },
                     });
@@ -194,3 +194,4 @@
 </body>
 
 </html>
+
